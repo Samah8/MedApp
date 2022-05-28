@@ -17,7 +17,7 @@ class NotificationService extends ChangeNotifier {
   Future initialize() async {
     FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
-    tz.initializeTimeZones();
+   _configureLocalTime();
 
     AndroidInitializationSettings androidInitializationSettings =
     const AndroidInitializationSettings("@mipmap/ic_launcher");
@@ -50,7 +50,7 @@ class NotificationService extends ChangeNotifier {
     await _flutterLocalNotificationsPlugin.zonedSchedule(
         medicine.id,
         medicine.name.toString(),
-        medicine.note.toString(),
+        medicine.time.toString(),
         _convertTime(hours , minutes),
 
         // tz.TZDateTime.now(tz.local).add(const Duration(seconds: 5)),

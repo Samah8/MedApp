@@ -7,6 +7,9 @@ import 'package:med/db/medicine_entity.dart';
 import 'package:med/ui/add_medicine.dart';
 import 'package:med/ui/edit_medicine.dart';
 import 'package:med/widgets/local_notify_manager.dart';
+import 'package:provider/provider.dart';
+
+import '../notifier/med_change_notifier.dart';
 
 
 class HomeScreen extends StatefulWidget {
@@ -18,7 +21,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  late AppDb _db;
+
   NotificationService localNotifyManager= NotificationService();
   Medicine medicine=Medicine();
 
@@ -26,88 +29,91 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    _db=AppDb();
     localNotifyManager.initialize();
+  }
+
+  @override
+  void dispose(){
+    super.dispose();
   }
 
 
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text("Medicines"),
-          centerTitle: true,
+    return  GetMaterialApp(
+        home: Scaffold(
+          appBar: AppBar(
+            title: const Text("Medicines"),
+            centerTitle: true,
+          ),
+          body: FutureBuilder<List<MedicineData>>(
+                future: Provider.of<AppDb>(context).getMedicines(),
+                builder: (context,snapshot){
+                  final List<MedicineData>? medicines=snapshot.data;
 
-        ),
-        body:FutureBuilder<List<MedicineData>>(
-          future: _db.getMedicines(),
-          builder: (context,snapshot){
-            final List<MedicineData>? medicines=snapshot.data;
+                  if(snapshot.connectionState!=ConnectionState.done){
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                    if(snapshot.hasError){
+                      return Center(
+                        child: Text(snapshot.hasError.toString()),
+                      );
+                  }
+                    if(medicine!=null) {
 
-            if(snapshot.connectionState!=ConnectionState.done){
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-              if(snapshot.hasError){
-                return Center(
-                  child: Text(snapshot.hasError.toString()),
-                );
-            }
-              if(medicine!=null) {
+                        return Padding(
+                            padding: const EdgeInsets.only(top: 8.0),
+                            child: ListView.builder(
+                              itemCount: medicines?.length,
+                              itemBuilder: (context, index) {
+                                final medicine = medicines![index];
+                                DateTime date = DateFormat.jm().parse(medicine.time.toString());
+                                var myTime = DateFormat("HH:mm").format(date);
+                                 localNotifyManager.sheduledNotification(
+                                    int.parse(myTime.toString().split(':')[0]),
+                                    int.parse(myTime.toString().split(":")[1]),
+                                    medicine
+                                );
+                                print("Time: $myTime");
+                                return  Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Card(
+                                      color: Colors.white,
+                                      child: ExpansionTile(
+                                        tilePadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+                                        title: Text(
+                                          medicine.name,
+                                          maxLines: 2,
+                                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                                        ),
+                                        subtitle: Text(medicine.time),
+                                        children: [
+                                          buildButtons(context, medicine),
 
-                  return Padding(
-                      padding: const EdgeInsets.only(top: 8.0),
-                      child: ListView.builder(
-                        itemCount: medicines?.length,
-                        itemBuilder: (context, index) {
-                          final medicine = medicines![index];
-                          DateTime date = DateFormat.jm().parse(medicine.time.toString());
-                          var myTime = DateFormat("HH:mm").format(date);
-                           localNotifyManager.sheduledNotification(
-                              int.parse(myTime.toString().split(':')[0]),
-                              int.parse(myTime.toString().split(":")[1]),
-                              medicine
-                          );
-                          print("Time: $myTime");
-                          return  Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Card(
-                                color: Colors.white,
-                                child: ExpansionTile(
-                                  tilePadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-                                  title: Text(
-                                    medicine.name,
-                                    maxLines: 2,
-                                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                                        ],
+                                      ),
+
                                   ),
-                                  subtitle: Text(medicine.time),
-                                  children: [
-                                    buildButtons(context, medicine),
+                                );
+                              },
+                            )
+                        );
+                      }
 
-                                  ],
-                                ),
-
-                            ),
-                          );
-                        },
-                      )
-                  );
-                }
-
-            return const Text('No Medicine Found .');
-          },
+                  return const Text('No Medicine Found .');
+                },
+          ),
+          floatingActionButton: FloatingActionButton(
+            onPressed: ()async {
+              await Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => const AddMedicine()),
+              );
+            },
+           child: const Icon(Icons.add),
+          ),
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: ()async {
-            await Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => const AddMedicine()),
-            );
-          },
-         child: const Icon(Icons.add),
-        ),
-      ),
     );
   }
   Widget buildButtons(BuildContext context, MedicineData medicine) => Row(
@@ -126,7 +132,7 @@ class _HomeScreenState extends State<HomeScreen> {
           label: const Text('Delete'),
           icon: const Icon(Icons.delete),
           onPressed: () {
-            _db.deleteMedicine(medicine.id);
+            Provider.of<AppDb>(context).deleteMedicine(medicine.id);
          }
         ),
       )

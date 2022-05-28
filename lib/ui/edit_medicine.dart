@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:med/db/app_db.dart';
 import 'package:drift/drift.dart' as drift;
+import 'package:provider/provider.dart';
 import '../widgets/custom_text_form_field.dart';
 import '../widgets/drop_down.dart';
 
@@ -17,7 +18,7 @@ class EditMedicine extends StatefulWidget {
 }
 
 class _EditMedicineState extends State<EditMedicine> {
-  late  AppDb _db;
+
   late MedicineData _medicineData;
   final TextEditingController _namecontroller =TextEditingController();
   final TextEditingController _notecontroller =TextEditingController();
@@ -37,15 +38,11 @@ class _EditMedicineState extends State<EditMedicine> {
   @override
   void initState() {
     super.initState();
-
-    _db=AppDb();
     getMedicine();
-
   }
 
   @override
   void dispose() {
-    _db.close();
     _namecontroller.dispose();
     _notecontroller.dispose();
     _startDcontroller.dispose();
@@ -209,7 +206,7 @@ class _EditMedicineState extends State<EditMedicine> {
         remind:drift.Value(int.parse(_remcontroller.text)),
         frequency: drift.Value(_frecontroller.text)
     );
-    _db.updateMedicine(entity).then((value) => ScaffoldMessenger.of(context)
+    Provider.of<AppDb>(context,listen: false).updateMedicine(entity).then((value) => ScaffoldMessenger.of(context)
         .showMaterialBanner(
         MaterialBanner(
           backgroundColor:Colors.blue[900] ,
@@ -220,11 +217,11 @@ class _EditMedicineState extends State<EditMedicine> {
         )
     )
     );
-    _db.allMedicines;
+    Provider.of<AppDb>(context).allMedicines;
   }
 
   void deleteMedicine(){
-    _db.deleteMedicine(widget.id).then((value) => ScaffoldMessenger.of(context)
+    Provider.of<AppDb>(context,listen: false).deleteMedicine(widget.id).then((value) => ScaffoldMessenger.of(context)
         .showMaterialBanner(
       MaterialBanner(
       backgroundColor:Colors.red ,
@@ -240,12 +237,12 @@ class _EditMedicineState extends State<EditMedicine> {
     )
     )
     );
-    _db.allMedicines;
+    Provider.of<AppDb>(context).allMedicines;
 
   }
 
   Future <void> getMedicine ()async{
-    _medicineData=await _db.getMedicine(widget.id);
+    _medicineData=await Provider.of<AppDb>(context).getMedicine(widget.id);
     _namecontroller.text=_medicineData.name;
     _notecontroller.text=_medicineData.note;
     _frecontroller.text=_medicineData.frequency;

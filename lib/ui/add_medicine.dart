@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:med/db/app_db.dart';
 import 'package:drift/drift.dart' as drift;
+import 'package:provider/provider.dart';
 import '../widgets/custom_text_form_field.dart';
 import '../widgets/drop_down.dart';
 
@@ -16,7 +17,7 @@ class AddMedicine extends StatefulWidget {
 
 class _AddMedicineState extends State<AddMedicine> {
   final _formkey=GlobalKey<FormState>();
-  late  AppDb _db;
+
   final TextEditingController _namecontroller =TextEditingController();
   final TextEditingController _notecontroller =TextEditingController();
   late final TextEditingController _startDcontroller =TextEditingController();
@@ -36,12 +37,11 @@ class _AddMedicineState extends State<AddMedicine> {
   void initState() {
     super.initState();
 
-    _db=AppDb();
   }
 
   @override
   void dispose() {
-    _db.close();
+
     _namecontroller.dispose();
     _notecontroller.dispose();
     _startDcontroller.dispose();
@@ -211,7 +211,7 @@ class _AddMedicineState extends State<AddMedicine> {
           remind: drift.Value(int.parse(_remcontroller.text)),
           frequency: drift.Value(_frecontroller.text)
       );
-      _db.insertMedicine(entity).then((value) =>
+      Provider.of<AppDb>(context,listen: false).insertMedicine(entity).then((value) =>
           ScaffoldMessenger.of(context)
               .showMaterialBanner(
               MaterialBanner(

@@ -28,7 +28,9 @@ LazyDatabase _openConnection(){
     return await select(medicine).get();
   }
 
-  Stream<List<MedicineData>> get allMedicines => select(medicine).watch();
+  Stream<List<MedicineData>> get allMedicines  {
+   return  select(medicine).watch();
+  }
 
   Future <MedicineData> getMedicine(int id)async{
     return await (select(medicine)..where((tbl) => tbl.id.equals(id))).getSingle();
