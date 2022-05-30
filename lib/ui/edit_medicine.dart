@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:med/db/app_db.dart';
 import 'package:drift/drift.dart' as drift;
@@ -58,6 +59,7 @@ class _EditMedicineState extends State<EditMedicine> {
     return Scaffold(
       appBar: AppBar(
         title:  const Text(('Edit Medicine')),
+        backgroundColor: const Color(0xff1222AC),
         centerTitle: true,
         actions: [
         TextButton(
@@ -76,73 +78,129 @@ class _EditMedicineState extends State<EditMedicine> {
         padding: const EdgeInsets.all(8.0),
         child: ListView(
           children: [
-            const SizedBox(height: 7.0,),
-            CustomTextFormField(controller: _namecontroller,txtlabel: 'Medicine Name'),
             const SizedBox(height: 10.0,),
-            InputField(title: "Medicine Frequency", hint: _selectedfrequency,controller: _frecontroller,
-              widget: DropdownButton(
-                elevation: 4,
-                iconSize: 32,
-                underline: Container(width: 0.0),
-                icon: const Icon(Icons.keyboard_arrow_down,color: Colors.grey),
-                onChanged: (String? newval){
-                  setState(() {
-                    _selectedfrequency=newval!;
-                    _frecontroller.text=newval;
-                  });
-                },
-                items:frequencylist.map<DropdownMenuItem<String>>((String value){
-                  return DropdownMenuItem<String> (
-                      value: value,
-                      child:Text(value)
-                  );
-                }
-                ).toList(),
-              ),
-
+            Text("Medicine Name",style:GoogleFonts.sansita(textStyle:const TextStyle(
+                fontSize: 15,
+                color: Color(0xff1222AC),
+                fontWeight: FontWeight.w500)
             ),
-            const SizedBox(height: 20.0,),
-            CustomDatepickerFormField(controller: _timecontroller, txtlabel: "Start Time",
-                callback: (){
-                 pickTime(context);
-                }),
-            const SizedBox(height: 10.0,),
-            InputField(title: "Remind me ", hint:"Every $_selectedremind hours",controller: _remcontroller,
-              widget:DropdownButton(
-                  elevation:4,
-                  underline: Container(width: 0),
-                  icon:const Icon(Icons.keyboard_arrow_down,color: Colors.grey,),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: CustomTextFormField(controller: _namecontroller,txtlabel: 'Medicine Name'),
+            ),
+            const SizedBox(height: 3.0,),
+
+            Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: InputField(title: "Medicine Frequency", hint: '',controller: _frecontroller,
+                widget: DropdownButton(
+                  elevation: 4,
                   iconSize: 32,
+                  underline: Container(width: 0.0),
+                  icon: const Icon(Icons.keyboard_arrow_down,color: Colors.grey),
                   onChanged: (String? newval){
                     setState(() {
-                      _selectedremind=int.parse(newval!);
-                      _remcontroller.text=newval;
+                      _selectedfrequency=newval!;
+                      _frecontroller.text=_selectedfrequency;
                     });
                   },
-                  items:remindlist.map<DropdownMenuItem<String>>((int value)
-                  {
+                  items:frequencylist.map<DropdownMenuItem<String>>((String value){
                     return DropdownMenuItem<String> (
-                      value: value.toString(),
-                      child: Text(value.toString()),
+                        value: value,
+                        child:Text(value)
                     );
                   }
-                  ).toList()
-              ) ,
+                  ).toList(),
+                ),
+              ),
             ),
             const SizedBox(height: 20.0,),
-            CustomDatepickerFormField(controller: _startDcontroller, txtlabel: 'Start Date',
-                callback:(){
-               pickStartDate(context);
-                }
-                ),
+            Text("Time",style:GoogleFonts.sansita(textStyle:const TextStyle(
+                fontSize: 15,
+                color: Color(0xff1222AC),
+                fontWeight: FontWeight.w500)
+            ),
+            ),
+            const SizedBox(height: 2.0,),
+            Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: CustomDatepickerFormField(controller: _timecontroller, txtlabel: "Start Time",
+                  callback: (){
+                    pickTime(context);
+                  }),
+            ),
+            const SizedBox(height: 3.0,),
+            Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: InputField(title: "Remind me ", hint:"Every $_selectedremind hours",controller: _remcontroller,
+                widget:DropdownButton(
+                    elevation:4,
+                    underline: Container(width: 0),
+                    icon:const Icon(Icons.keyboard_arrow_down,color: Colors.grey),
+                    iconSize: 32,
+                    onChanged: (String? newval){
+                      setState(() {
+                        _selectedremind=int.parse(newval!);
+                        _remcontroller.text=newval;
+                      });
+                    },
+                    items:remindlist.map<DropdownMenuItem<String>>((int value)
+                    {
+                      return DropdownMenuItem<String> (
+                        value: value.toString(),
+                        child: Text(value.toString()),
+                      );
+                    }
+                    ).toList()
+                ) ,
+              ),
+            ),
             const SizedBox(height: 20.0,),
-            CustomDatepickerFormField(controller: _endDcontroller, txtlabel: "End Date",
-                callback: (){
-              pickEndDate(context);
-                }
-                ),
+            Text("Start Date",style:GoogleFonts.sansita(textStyle:const TextStyle(
+                fontSize: 15,
+                color: Color(0xff1222AC),
+                fontWeight: FontWeight.w500)
+            ),
+            ),
+            const SizedBox(height: 2.0,),
+            Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: CustomDatepickerFormField(controller: _startDcontroller, txtlabel: 'Start Date',
+                  callback:(){
+                    pickStartDate(context);
+                  }
+              ),
+            ),
             const SizedBox(height: 20.0,),
-            CustomTextFormField(controller: _notecontroller,txtlabel: 'Note'),
+
+            Text("End Date",style:GoogleFonts.sansita(textStyle:const TextStyle(
+                fontSize: 15,
+                color: Color(0xff1222AC),
+                fontWeight: FontWeight.w500)
+            ),
+            ),
+            const SizedBox(height: 2.0,),
+            Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: CustomDatepickerFormField(controller: _endDcontroller, txtlabel: "End Date",
+                  callback: (){
+                    pickEndDate(context);
+                  }
+              ),
+            ),
+            const SizedBox(height: 20.0,),
+            Text("Note",style:GoogleFonts.sansita(textStyle:const TextStyle(
+                fontSize: 15,
+                color: Color(0xff1222AC),
+                fontWeight: FontWeight.w500)
+            ),
+            ),
+            const SizedBox(height: 2.0,),
+            Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: CustomTextFormField(controller: _notecontroller,txtlabel: 'Note'),
+            ),
           ],
         ),
       ),
@@ -213,36 +271,20 @@ class _EditMedicineState extends State<EditMedicine> {
           content: const Text('This Medicine updated  ',style:TextStyle(color: Colors.white),),
           actions: [TextButton(
               child:const Text('Close',style:TextStyle(color: Colors.white),) ,
-              onPressed:()=>ScaffoldMessenger.of(context).hideCurrentMaterialBanner())],
+              onPressed:() {
+                ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
+                Get.back();
+              })],
         )
     )
     );
-    Provider.of<AppDb>(context).allMedicines;
+    Provider.of<AppDb>(context,listen: false).allMedicines;
   }
 
-  void deleteMedicine(){
-    Provider.of<AppDb>(context,listen: false).deleteMedicine(widget.id).then((value) => ScaffoldMessenger.of(context)
-        .showMaterialBanner(
-      MaterialBanner(
-      backgroundColor:Colors.red ,
-      content: const Text('This Medicine deleted ',style:TextStyle(color: Colors.white),),
-      actions: [TextButton(
-          child:const Text('Close',style:TextStyle(color: Colors.white),) ,
-          onPressed:(){
-            ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
-            Get.back();
-          }
-          )
-      ],
-    )
-    )
-    );
-    Provider.of<AppDb>(context).allMedicines;
 
-  }
 
   Future <void> getMedicine ()async{
-    _medicineData=await Provider.of<AppDb>(context).getMedicine(widget.id);
+    _medicineData=await Provider.of<AppDb>(context,listen: false).getMedicine(widget.id);
     _namecontroller.text=_medicineData.name;
     _notecontroller.text=_medicineData.note;
     _frecontroller.text=_medicineData.frequency;

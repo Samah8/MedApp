@@ -44,6 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
         home: Scaffold(
           appBar: AppBar(
             title: const Text("Medicines"),
+            backgroundColor: const Color(0xff1222AC),
             centerTitle: true,
           ),
           body: FutureBuilder<List<MedicineData>>(
@@ -82,16 +83,17 @@ class _HomeScreenState extends State<HomeScreen> {
                                   child: Card(
                                       color: Colors.white,
                                       child: ExpansionTile(
+                                        iconColor:  const Color(0xff1222AC),
+
                                         tilePadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
                                         title: Text(
                                           medicine.name,
                                           maxLines: 2,
-                                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18,color: Color(0xff1222AC),),
                                         ),
-                                        subtitle: Text(medicine.time),
+                                        subtitle: Text(medicine.time,style: TextStyle(color:  Color(0xff1222AC)),),
                                         children: [
                                           buildButtons(context, medicine),
-
                                         ],
                                       ),
 
@@ -106,6 +108,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 },
           ),
           floatingActionButton: FloatingActionButton(
+            backgroundColor: const Color(0xff1222AC),
             onPressed: ()async {
               await Navigator.of(context).push(
                 MaterialPageRoute(builder: (context) => const AddMedicine()),
@@ -132,11 +135,28 @@ class _HomeScreenState extends State<HomeScreen> {
           label: const Text('Delete'),
           icon: const Icon(Icons.delete),
           onPressed: () {
-            Provider.of<AppDb>(context).deleteMedicine(medicine.id);
+            Provider.of<AppDb>(context,listen:false).deleteMedicine(medicine.id).then((value) => ScaffoldMessenger.of(context)
+                .showMaterialBanner(
+                MaterialBanner(
+                  backgroundColor:Colors.red[700] ,
+                  content: const Text('This Medicine deleted ',style:TextStyle(color: Colors.white),),
+                  actions: [TextButton(
+                      child:const Text('Close',style:TextStyle(color: Colors.white),) ,
+                      onPressed:(){
+                        ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
+                        Get.back();
+                      }
+                  )
+                  ],
+                )
+            )
+            );
+            Provider.of<AppDb>(context,listen: false).allMedicines;
          }
         ),
       )
     ],
   );
+
 
 }

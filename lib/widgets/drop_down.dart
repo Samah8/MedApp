@@ -19,9 +19,13 @@ class InputField extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            title,
-            style: const TextStyle(fontWeight: FontWeight.w500),
+          Padding(
+            padding: const EdgeInsets.only(right: 90),
+            child: Text(
+              title,
+              style: const TextStyle(fontWeight: FontWeight.w500,fontSize: 15,
+                color: Color(0xff1222AC),),
+            ),
           ),
           Container(
             height: 52,
@@ -45,11 +49,8 @@ class InputField extends StatelessWidget {
                       controller: controller,
                       decoration: InputDecoration(
                         hintText: hint,
-
                       ),
-
                       onChanged:onclick,
-
                     )
                 ),
                 widget==null?Container():Container(child: widget)

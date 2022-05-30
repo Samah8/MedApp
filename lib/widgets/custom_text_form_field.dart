@@ -13,13 +13,17 @@ class CustomTextFormField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return  TextFormField(
+
       controller: _controller,
-      keyboardType:TextInputType.name,
       decoration:  InputDecoration(
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(15),
+            borderSide: const BorderSide(
+              color:Colors.black,
+              width: 2.5,
+              style:BorderStyle.solid
+            )
           ),
-        label: Text(_txtlabel)
       ),
       validator: (value){
         if(value==null || value.isEmpty){
@@ -48,12 +52,10 @@ class CustomDatepickerFormField extends StatelessWidget {
     return TextFormField(
       readOnly: true,
       controller: _controller,
-      keyboardType:TextInputType.name,
       decoration:  InputDecoration(
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(15),
           ),
-          label: Text(_txtlabel)
       ),
       validator: (value){
         if(value==null || value.isEmpty){
