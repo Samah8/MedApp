@@ -20,7 +20,7 @@ class AddMedicine extends StatefulWidget {
 
 class _AddMedicineState extends State<AddMedicine> {
   final _formkey=GlobalKey<FormState>();
-
+  late AppDb _db;
   final TextEditingController _namecontroller =TextEditingController();
   final TextEditingController _notecontroller =TextEditingController();
   late final TextEditingController _startDcontroller =TextEditingController();
@@ -39,7 +39,7 @@ class _AddMedicineState extends State<AddMedicine> {
   @override
   void initState() {
     super.initState();
-
+    _db=AppDb();
   }
 
   @override
@@ -273,7 +273,7 @@ class _AddMedicineState extends State<AddMedicine> {
           remind: drift.Value(int.parse(_remcontroller.text)),
           frequency: drift.Value(_frecontroller.text)
       );
-      Provider.of<AppDb>(context,listen: false).insertMedicine(entity).then((value) =>
+      _db.insertMedicine(entity).then((value) =>
           ScaffoldMessenger.of(context)
               .showMaterialBanner(
               MaterialBanner(

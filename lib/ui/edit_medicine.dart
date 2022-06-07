@@ -19,7 +19,7 @@ class EditMedicine extends StatefulWidget {
 }
 
 class _EditMedicineState extends State<EditMedicine> {
-
+   late AppDb _db;
   late MedicineData _medicineData;
   final TextEditingController _namecontroller =TextEditingController();
   final TextEditingController _notecontroller =TextEditingController();
@@ -39,6 +39,7 @@ class _EditMedicineState extends State<EditMedicine> {
   @override
   void initState() {
     super.initState();
+    _db=AppDb();
     getMedicine();
   }
 
@@ -264,7 +265,7 @@ class _EditMedicineState extends State<EditMedicine> {
         remind:drift.Value(int.parse(_remcontroller.text)),
         frequency: drift.Value(_frecontroller.text)
     );
-    Provider.of<AppDb>(context,listen: false).updateMedicine(entity).then((value) => ScaffoldMessenger.of(context)
+    _db.updateMedicine(entity).then((value) => ScaffoldMessenger.of(context)
         .showMaterialBanner(
         MaterialBanner(
           backgroundColor:Colors.blue[900] ,
@@ -278,13 +279,13 @@ class _EditMedicineState extends State<EditMedicine> {
         )
     )
     );
-    Provider.of<AppDb>(context,listen: false).allMedicines;
+   _db.allMedicines;
   }
 
 
 
   Future <void> getMedicine ()async{
-    _medicineData=await Provider.of<AppDb>(context,listen: false).getMedicine(widget.id);
+    _medicineData=await _db.getMedicine(widget.id);
     _namecontroller.text=_medicineData.name;
     _notecontroller.text=_medicineData.note;
     _frecontroller.text=_medicineData.frequency;

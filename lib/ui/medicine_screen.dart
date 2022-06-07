@@ -9,7 +9,7 @@ import 'package:med/ui/edit_medicine.dart';
 import 'package:med/widgets/local_notify_manager.dart';
 import 'package:provider/provider.dart';
 
-import '../notifier/med_change_notifier.dart';
+
 
 
 class HomeScreen extends StatefulWidget {
@@ -21,7 +21,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
+  late AppDb _db;
   NotificationService localNotifyManager= NotificationService();
   Medicine medicine=Medicine();
 
@@ -29,6 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    _db=AppDb();
     localNotifyManager.initialize();
   }
 
@@ -89,9 +90,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                         title: Text(
                                           medicine.name,
                                           maxLines: 2,
-                                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18,color: Color(0xff1222AC),),
+                                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize:20,color: Color(0xff1222AC),),
                                         ),
-                                        subtitle: Text(medicine.time,style: TextStyle(color:  Color(0xff1222AC)),),
+                                        subtitle: Text(medicine.time,style: const TextStyle(color:Colors.black,fontWeight: FontWeight.w600),),
                                         children: [
                                           buildButtons(context, medicine),
                                         ],
@@ -123,8 +124,8 @@ class _HomeScreenState extends State<HomeScreen> {
     children: [
       Expanded(
         child: TextButton.icon(
-          label: const Text('Edit'),
-          icon: const Icon(Icons.edit),
+          label: const Text('Edit',style:TextStyle(color: Color(0xff1222AC))),
+          icon: const Icon(Icons.edit,color: Color(0xff1222AC),),
           onPressed: () {
            Get.to(EditMedicine(id: medicine.id));
           }
@@ -132,10 +133,10 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
       Expanded(
         child: TextButton.icon(
-          label: const Text('Delete'),
-          icon: const Icon(Icons.delete),
+          label: const Text('Delete',style:TextStyle(color: Color(0xff1222AC))),
+          icon: const Icon(Icons.delete,color: Color(0xff1222AC),),
           onPressed: () {
-            Provider.of<AppDb>(context,listen:false).deleteMedicine(medicine.id).then((value) => ScaffoldMessenger.of(context)
+           _db .deleteMedicine(medicine.id).then((value) => ScaffoldMessenger.of(context)
                 .showMaterialBanner(
                 MaterialBanner(
                   backgroundColor:Colors.red[700] ,
@@ -151,7 +152,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 )
             )
             );
-            Provider.of<AppDb>(context,listen: false).allMedicines;
+            _db.allMedicines;
          }
         ),
       )
